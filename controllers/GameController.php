@@ -12,10 +12,6 @@ use yii\filters\VerbFilter;
 class GameController extends Controller
 {
 
-    public function __construct(private IndexHandler $handler)
-    {
-        
-    }
     /**
      * {@inheritdoc}
      */
@@ -65,8 +61,8 @@ class GameController extends Controller
      */
     public function actionIndex()
     {
-        $response = $this->handler();
-        return $this->render($response);
+        // $response = $this->handler();
+        return $this->render('index.php', ['askf', 'kasdhn']);
     }
 
 }
