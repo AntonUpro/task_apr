@@ -19,5 +19,5 @@ OPTIONS /items/123: список HTTP-методов, поддерживаемы
 
 Метод получения списка игр определённого жанра реализован через yii\rest\Controller.
 
-GET games-by-genre/<genreRequest> - получение игр по жанру "genreRequest"
+GET games-by-genre/genreRequest - получение игр по жанру "genreRequest"
 
