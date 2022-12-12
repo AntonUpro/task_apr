@@ -9,9 +9,9 @@ class m221204_092405_newTablesGameGenreStudio extends Migration
 {
 
     const TABLE_GAME = 'game';
-    const TABLE_GANRE = 'ganre';
+    const TABLE_GENRE = 'genre';
     const TABLE_STUDIO = 'studio';
-    const TABLE_GAME_GANRE = 'game_ganre';
+    const TABLE_GAME_GENRE = 'game_genre';
 
     /**
      * {@inheritdoc}
@@ -20,39 +20,59 @@ class m221204_092405_newTablesGameGenreStudio extends Migration
     {
         // Создаем таблицу с названиями игр
         $this->createTable(self::TABLE_GAME, [
-            'uuid' => $this->string()->unique()->notNull(),
-            'uuid_studio' => $this->string()->notNull(),
+            'id' => $this->primaryKey(),
+            'id_studio' => $this->integer()->notNull(),
             'name' => $this->string()->notNull(),
         ]);
 
-        $this->addPrimaryKey('PK_table_game', self::TABLE_GAME, 'uuid');
-
         // Создаем таблицу с названиями жанров
-        $this->createTable(self::TABLE_GANRE, [
-            'uuid' => $this->string()->unique()->notNull(),
-            'ganre' => $this->string()->notNull()->unique(),
+        $this->createTable(self::TABLE_GENRE, [
+            'id' => $this->primaryKey(),
+            'genre' => $this->string()->notNull()->unique(),
         ]);
-
-        $this->addPrimaryKey('PK_table_ganre', self::TABLE_GANRE, 'uuid');
 
         // Создаем таблицу с названиями студий
         $this->createTable(self::TABLE_STUDIO, [
-            'uuid' => $this->string()->unique()->notNull(),
-            'ganre' => $this->string()->notNull()->unique(),
+            'id' => $this->primaryKey(),
+            'studio' => $this->string()->notNull()->unique(),
         ]);
 
-        $this->addPrimaryKey('PK_table_studio', self::TABLE_STUDIO, 'uuid');
-
-        $this->addForeignKey('FK_game_studio', self::TABLE_GAME, 'uuid_studio', self::TABLE_STUDIO, 'uuid');
+        $this->addForeignKey(
+            'FK_game_studio',
+            self::TABLE_GAME,
+            'id_studio',
+            self::TABLE_STUDIO,
+            'id',
+            'CASCADE',
+            'CASCADE'
+        );
 
         // Создаем таблицу взаимосвязи игр и жанров
-        $this->createTable(self::TABLE_GAME_GANRE, [
-            'uuid_game' => $this->string()->notNull(),
-            'uuid_ganre' => $this->string()->notNull(),
+        $this->createTable(self::TABLE_GAME_GENRE, [
+            'id' => $this->primaryKey(),
+            'id_game' => $this->integer()->notNull(),
+            'id_genre' => $this->integer()->notNull(),
         ]);
 
-        $this->addForeignKey('FK_game_ganre-game', self::TABLE_GAME_GANRE, 'uuid_game', self::TABLE_GAME, 'uuid');
-        $this->addForeignKey('FK_game_ganre-ganre', self::TABLE_GAME_GANRE, 'uuid_ganre', self::TABLE_GANRE, 'uuid');
+        $this->addForeignKey(
+            'FK_game_genre-game',
+            self::TABLE_GAME_GENRE,
+            'id_game',
+            self::TABLE_GAME,
+            'id',
+            'CASCADE',
+            'CASCADE'
+        );
+
+        $this->addForeignKey(
+            'FK_game_genre-genre',
+            self::TABLE_GAME_GENRE,
+            'id_genre',
+            self::TABLE_GENRE,
+            'id',
+            'CASCADE',
+            'CASCADE'
+        );
     }
 
     /**
@@ -60,18 +80,15 @@ class m221204_092405_newTablesGameGenreStudio extends Migration
      */
     public function safeDown()
     {
-        $this->dropForeignKey('FK_game_ganre-ganre', self::TABLE_GAME_GANRE);
-        $this->dropForeignKey('FK_game_ganre-game', self::TABLE_GAME_GANRE);
-        $this->dropTable(self::TABLE_GAME_GANRE);
+        $this->dropForeignKey('FK_game_genre-genre', self::TABLE_GAME_GENRE);
+        $this->dropForeignKey('FK_game_genre-game', self::TABLE_GAME_GENRE);
+        $this->dropTable(self::TABLE_GAME_GENRE);
 
         $this->dropForeignKey('FK_game_studio', self::TABLE_GAME);
-        $this->dropPrimaryKey('PK_table_studio', self::TABLE_STUDIO);
         $this->dropTable(self::TABLE_STUDIO);
 
-        $this->dropPrimaryKey('PK_table_ganre', self::TABLE_GANRE);
-        $this->dropTable(self::TABLE_GANRE);
+        $this->dropTable(self::TABLE_GENRE);
 
-        $this->dropPrimaryKey('PK_table_game', self::TABLE_GAME);
         $this->dropTable(self::TABLE_GAME);
     }
 }
